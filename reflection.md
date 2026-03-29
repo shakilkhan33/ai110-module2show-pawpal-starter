@@ -83,8 +83,7 @@ classDiagram
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes, my design changed during implementation. Based on AI feedback, I merged key scheduling logic into one class to make testing and debugging easier.
 
 ---
 
