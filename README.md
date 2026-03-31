@@ -2,6 +2,16 @@
 
 You are building **PawPal+**, a Streamlit app that helps a pet owner plan care tasks for their pet.
 
+## PawPal+
+
+**PawPal+** is an intelligent pet care planning assistant that:
+
+- **Tracks tasks** — Manage all pet care activities (walks, feeding, medications, enrichment, grooming, and more)
+- **Respects constraints** — Considers available time, task priorities, and owner preferences
+- **Creates smart schedules** — Generates optimized daily plans using intelligent task ranking and consistent prioritization
+- **Explains decisions** — Provides clear reasoning so owners understand why tasks were scheduled the way they are
+- **Simple to use** — Clean interface for entering pet info and managing tasks with minimal friction
+
 ## Scenario
 
 A busy pet owner needs help staying consistent with pet care. They want an assistant that can:
@@ -45,3 +55,24 @@ pip install -r requirements.txt
 ## Smarter Scheduling
 
 PawPal+ now creates more useful daily plans by ranking tasks by priority, fitting tasks within available time, and using consistent tie-breaking when tasks compete. The planner also gives clearer reasoning for task choices so owners can understand and adjust the schedule quickly.
+
+## Testing PawPal+
+
+To ensure your PawPal+ implementation works correctly:
+
+```bash
+# Run all tests
+pytest test_pawpal.py -v
+
+# Run tests with coverage
+pytest test_pawpal.py --cov=. --cov-report=html
+```
+
+**What to test:**
+- Owner and pet data validation
+- Task creation and modification
+- Schedule generation with various constraints
+- Task ranking and prioritization logic
+- Edge cases (no time available, conflicting priorities, empty task list)
+
+Write tests incrementally as you implement each scheduling feature.

@@ -24,6 +24,7 @@ class Task:
 		return f"{hours:02d}:{minutes:02d}"
 
 	def __post_init__(self) -> None:
+		# Core behavior 1: validate and normalize task inputs.
 		"""Validate and normalize task fields after initialization."""
 		description = self.description.strip()
 		if not description:
@@ -42,6 +43,7 @@ class Task:
 		self.start_time = start_time
 
 	def mark_completed(self) -> None:
+		# Core behavior 2: lifecycle updates plus recurring task rollover.
 		"""Mark this task completed and enqueue the next recurring instance when relevant."""
 		if self.is_completed:
 			return
@@ -128,6 +130,7 @@ class Pet:
 		self.age = age
 
 	def add_task(self, task: Task) -> None:
+		# Core behavior 3: prevent duplicate tasks and time conflicts for a pet.
 		"""Attach a new task to this pet, preventing duplicate/conflicting pending tasks."""
 		normalized_description = task.description.strip().lower()
 		normalized_frequency = task.frequency.strip().lower()
@@ -353,6 +356,7 @@ class Scheduler:
 		)
 
 	def generate_plan(self, max_minutes: int | None = None) -> list[Task]:
+		# Core behavior 4: build a practical schedule within available time.
 		"""Build a balanced daily plan with quick wins and per-pet fairness."""
 		if max_minutes is not None and max_minutes < 0:
 			raise ValueError("Max minutes cannot be negative.")
