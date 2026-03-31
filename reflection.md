@@ -97,7 +97,12 @@ Yes, my design changed during implementation. Based on AI feedback, I merged key
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+
+My scheduler only checks for exact start time matches instead of detecting overlapping durations. So if a task at 10:00 AM runs 60 minutes and another starts at 10:30 AM, it won't flag a conflict even though they overlap.
+
 - Why is that tradeoff reasonable for this scenario?
+
+This is reasonable because users manually add tasks (not auto-scheduled), task durations are flexible, and protecting against exact conflicts is the primary concern. Full overlap detection would add complexity without much benefit.
 
 ---
 
