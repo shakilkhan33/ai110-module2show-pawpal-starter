@@ -111,16 +111,16 @@ Yes, my design changed during implementation. The biggest change was moving task
 
 ## Features Implemented
 
-- **Input validation and normalization**: Validates task descriptions, durations, frequencies, and HH:MM start times, then normalizes user input (for example, lowercasing frequency/species and trimming whitespace).
-- **Multi-key task organization**: Orders tasks using layered sorting (completion state, priority score, duration, frequency, description) for stable, consistent scheduling behavior.
-- **Sort by time (HH:MM)**: Supports chronological and reverse-chronological ordering using parsed HH:MM values.
-- **Priority scoring heuristic**: Uses frequency-based weights plus a short-task bonus so high-impact recurring tasks are scheduled earlier.
-- **Time-constrained daily plan generation**: Builds plans within available minutes using a three-phase approach: quick wins, per-pet round-robin fairness, and final fill.
-- **Recurring task rollover**: Completing daily/weekly tasks automatically creates the next occurrence with the correct future due date.
-- **Ambiguity-safe task completion**: Requires frequency disambiguation when multiple pending tasks share the same description.
-- **Duplicate and conflict prevention at add-time**: Blocks duplicate incomplete tasks (same description + frequency) and same-time pending tasks for the same pet/day.
-- **Conflict detection and summaries**: Detects per-pet and global scheduling conflicts and generates a readable conflict report.
-- **Filtering and availability checks**: Filters by completion/pet and enforces owner availability in minutes.
+- **Input validation and cleanup**: I validate task description, duration, frequency, and HH:MM start time, then clean the input (like trimming spaces and normalizing case) so data stays consistent.
+- **Consistent task ordering**: I sort tasks using multiple tie-breakers (completion state, priority score, duration, frequency, then description) so results are stable and predictable.
+- **Time-based sorting**: I support sorting tasks by HH:MM in both ascending and descending order.
+- **Simple priority heuristic**: I rank tasks using frequency weights plus a small bonus for shorter tasks, which helps recurring high-impact tasks show up earlier.
+- **Plan generation within time limits**: I generate daily plans that stay within available minutes using three phases: quick wins, round-robin fairness across pets, and a final fill pass.
+- **Recurring task rollover**: When a daily or weekly task is completed, the next occurrence is automatically created with the correct future due date.
+- **Safer completion flow**: If multiple pending tasks share the same description, the user must provide frequency so the system marks the correct one.
+- **Duplicate and time-conflict protection**: At add-time, I block duplicate incomplete tasks (same description + frequency) and pending same-time tasks for the same pet/day.
+- **Conflict reporting**: I detect both per-pet and global scheduling conflicts and return a readable summary.
+- **Filtering and availability checks**: I support filtering by completion status and pet, and I enforce owner availability in minutes.
 
 ---
 
@@ -148,12 +148,16 @@ This is reasonable because users manually add tasks (not auto-scheduled), task d
 **a. How you used AI**
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
+I mostly used AI for debugging with `pytest`. I was confused many times during the project, and when I consulted AI, it sometimes gave me wrong answers, but most of the time it gave me helpful guidance. I also used it to check my class structure (`Owner`, `Pet`, `Task`, `Scheduler`) and to make sure my scheduling logic was clean. It helped me think step by step when I got stuck with conflict detection and recurring tasks.
 - What kinds of prompts or questions were most helpful?
+AI is a tool, and I believe if you guide it properly and know how to use it, it can help solve problems effectively. The most helpful prompts for me were about debugging and writing efficient code. I asked things like: why my test is failing, how to avoid duplicate tasks, and how to rank tasks by priority without breaking other features. Prompts with clear context from my code gave me better answers.
 
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
+In this UI session, I had to import the four core classes, but AI gave me imports from different files. It looked awkward to me, so I changed it manually in my code.
 - How did you evaluate or verify what the AI suggested?
+During my first semester, I took a backend course, so I used that knowledge to evaluate what AI suggested. I did not trust every answer directly. I verified it by running the code, checking `pytest` results, and comparing the output with my expected behavior.
 
 ---
 
@@ -164,10 +168,18 @@ This is reasonable because users manually add tasks (not auto-scheduled), task d
 - What behaviors did you test?
 - Why were these tests important?
 
+I tested core behaviors from my project: task add/remove flow, mark complete flow, recurring task creation for daily/weekly, sorting by time (ascending and descending), filtering by completion and pet name, conflict detection, and plan generation when there are no tasks. I also tested edge cases like duplicate tasks and same-time conflicts.
+
+These tests were important because my app is mostly logic-based. If one logic part breaks, the plan can be wrong for the user. Testing helped me confirm that my scheduler works in a predictable way and that new features did not break old behavior.
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
+
+I am confident at a good level because I ran `pytest` many times and the main workflows passed. I also checked both normal cases and failure cases.
+
+If I had more time, I would test more edge cases like overlapping duration conflicts (not only exact same start time), very large task lists, and cases where available time is very small but tasks have very high priority.
 
 ---
 
@@ -176,11 +188,14 @@ This is reasonable because users manually add tasks (not auto-scheduled), task d
 **a. What went well**
 
 - What part of this project are you most satisfied with?
+I had never made an app before, so this project means a lot to me. I am really happy to see the final result. Before this, coding felt like magic, but now I understand it is mostly logic and problem-solving, and you need to know how to apply it step by step.
 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+If I had another iteration, I would improve conflict handling by checking overlapping durations, not only exact same start times. I would also improve the UI flow to make task input and editing more user-friendly, and add clearer explanations for why each task is selected in the daily plan.
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+My key takeaway is that AI can support me well, but I still need to use my own judgment and verify everything with tests. I learned that good system design and clear logic make debugging easier, and writing small test cases gives me confidence in my code.
