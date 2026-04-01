@@ -11,79 +11,116 @@ Core user actions:
 
 - Briefly describe your initial UML design.
 
-Initial UML: I designed the pet care app with four classes: Pet, Owner, Task, and Scheduler. Owner owns pets and tasks, and Scheduler builds today's plan from tasks and constraints.
+Initial UML: I designed the pet care app with four classes: Pet, Owner, Task, and Scheduler. In the final implementation, Owner manages pets, each Pet manages its own tasks, and Scheduler coordinates planning/filtering/conflict checks by working through Owner.
 
 - What classes did you include, and what responsibilities did you assign to each?
 
 I used four main classes to separate data from planning logic:
 
 **Pet**
-Responsibility: Store each pet's profile information used for personalized care planning.
-Attributes: name, species, age.
-Methods: get_info(), update_info().
+Responsibility: Store each pet's profile and directly manage that pet's tasks.
+Attributes: name, species, age, tasks.
+Methods: get_info(), update_info(), add_task(), remove_task(), get_tasks(), mark_task_complete().
 
 **Owner**
-Responsibility: Represent the human caregiver's constraints and preferences that affect scheduling.
-Attributes: name, available_hours, preferences.
-Methods: set_preferences(), check_availability().
+Responsibility: Represent caregiver constraints/preferences and manage multiple pets.
+Attributes: name, available_hours, preferences, pets.
+Methods: add_pet(), remove_pet(), get_pet(), set_preferences(), check_availability(), get_all_tasks().
 
 **Task**
-Responsibility: Model one care activity (walk, feeding, medication, etc.) with enough detail to be prioritized.
-Attributes: title, duration_minutes, priority.
-Methods: update_priority(), is_high_priority().
+Responsibility: Model one care activity with scheduling, recurrence, and completion state.
+Attributes: description, time_minutes, frequency, due_date, start_time, is_completed.
+Methods: time (property), mark_completed(), mark_complition() alias, mark_incomplete(), get_info().
 
 **Scheduler**
-Responsibility: Generate the daily care plan by combining tasks with owner constraints and pet context.
-Attributes: tasks, owner, pet, max_daily_minutes.
-Methods: add_task(), remove_task(), prioritize_tasks(), generate_plan().
+Responsibility: Coordinate task organization, filtering, plan generation, and conflict detection using Owner and Pet data.
+Attributes: owner.
+Methods: organize_tasks(), sort_by_time(), filter_tasks(), generate_plan(), add_task_to_pet(), remove_task_from_pet(), mark_task_complete(), detect_pet_conflicts(), detect_all_conflicts(), has_scheduling_conflicts(), get_conflict_summary().
 
 ```mermaid
 classDiagram
+    class Task {
+        +description: str
+        +time_minutes: int
+        +frequency: str
+        +due_date: date
+        +start_time: str
+        +is_completed: bool
+        +time: str
+        +mark_completed()
+        +mark_complition()
+        +mark_incomplete()
+        +get_info()
+    }
+
     class Pet {
         +name: str
         +species: str
         +age: int
+        +tasks: list~Task~
         +get_info()
         +update_info(name, species, age)
+        +add_task(task)
+        +remove_task(description)
+        +get_tasks(include_completed)
+        +mark_task_complete(description, frequency)
     }
 
     class Owner {
         +name: str
         +available_hours: float
-        +preferences: dict
+        +preferences: dict~str,str~
+        +pets: list~Pet~
+        +add_pet(pet)
+        +remove_pet(pet_name)
+        +get_pet(pet_name)
         +set_preferences(preferences)
         +check_availability(required_minutes)
-    }
-
-    class Task {
-        +title: str
-        +duration_minutes: int
-        +priority: str
-        +update_priority(priority)
-        +is_high_priority()
+        +get_all_tasks(include_completed)
     }
 
     class Scheduler {
-        +tasks: list~Task~
         +owner: Owner
-        +pet: Pet
-        +max_daily_minutes: int
-        +add_task(task)
-        +remove_task(task_title)
-        +prioritize_tasks()
-        +generate_plan()
+        +get_all_tasks(include_completed)
+        +get_tasks_by_pet()
+        +filter_tasks(is_completed, pet_name)
+        +add_task_to_pet(pet_name, task)
+        +remove_task_from_pet(pet_name, task_description)
+        +mark_task_complete(pet_name, task_description, frequency)
+        +organize_tasks(include_completed)
+        +sort_by_time(include_completed, descending)
+        +generate_plan(max_minutes)
+        +get_tasks_at_time(time)
+        +detect_pet_conflicts(pet_name)
+        +detect_all_conflicts()
+        +has_scheduling_conflicts(pet_name)
+        +get_conflict_summary()
     }
 
-    Owner "1" o-- "0..*" Pet : adds pet
-    Owner "1" o-- "0..*" Task : schedules walk/tasks
+    Owner "1" o-- "0..*" Pet : owns
+    Pet "1" *-- "0..*" Task : manages
     Scheduler "1" --> "1" Owner : uses constraints
-    Scheduler "1" --> "1" Pet : builds plan for
-    Scheduler "1" --> "0..*" Task : selects and orders
+    Task "0..*" --> "0..1" Pet : parent reference
 ```
 
 **b. Design changes**
 
-Yes, my design changed during implementation. Based on AI feedback, I merged key scheduling logic into one class to make testing and debugging easier.
+Yes, my design changed during implementation. The biggest change was moving task ownership to Pet (instead of Owner), adding recurrence/completion behavior directly on Task, and expanding Scheduler into an orchestration layer for filtering, ordering, planning, and conflict reporting across pets.
+
+---
+
+## Features Implemented
+
+- **Input validation and normalization**: Validates task descriptions, durations, frequencies, and HH:MM start times, then normalizes user input (for example, lowercasing frequency/species and trimming whitespace).
+- **Multi-key task organization**: Orders tasks using layered sorting (completion state, priority score, duration, frequency, description) for stable, consistent scheduling behavior.
+- **Sort by time (HH:MM)**: Supports chronological and reverse-chronological ordering using parsed HH:MM values.
+- **Priority scoring heuristic**: Uses frequency-based weights plus a short-task bonus so high-impact recurring tasks are scheduled earlier.
+- **Time-constrained daily plan generation**: Builds plans within available minutes using a three-phase approach: quick wins, per-pet round-robin fairness, and final fill.
+- **Recurring task rollover**: Completing daily/weekly tasks automatically creates the next occurrence with the correct future due date.
+- **Ambiguity-safe task completion**: Requires frequency disambiguation when multiple pending tasks share the same description.
+- **Duplicate and conflict prevention at add-time**: Blocks duplicate incomplete tasks (same description + frequency) and same-time pending tasks for the same pet/day.
+- **Conflict detection and summaries**: Detects per-pet and global scheduling conflicts and generates a readable conflict report.
+- **Filtering and availability checks**: Filters by completion/pet and enforces owner availability in minutes.
 
 ---
 

@@ -76,3 +76,18 @@ pytest test_pawpal.py --cov=. --cov-report=html
 - Edge cases (no time available, conflicting priorities, empty task list)
 
 Write tests incrementally as you implement each scheduling feature.
+
+## 📸 Demo
+
+Add a screenshot of your final Streamlit app here.
+
+Use this embed format:
+
+<a href="final_images/Screenshot%202026-04-01%20005115.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005115.png' title='PawPal App 1' width='900' alt='PawPal App 1' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20005304.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005304.png' title='PawPal App 2' width='900' alt='PawPal App 2' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20005326.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005326.png' title='PawPal App 3' width='900' alt='PawPal App 3' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20005354.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005354.png' title='PawPal App 4' width='900' alt='PawPal App 4' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20005412.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005412.png' title='PawPal App 5' width='900' alt='PawPal App 5' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20005614.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20005614.png' title='PawPal App 6' width='900' alt='PawPal App 6' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20010246.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20010246.png' title='PawPal App 7' width='900' alt='PawPal App 7' class='center-block' /></a>
+<a href="final_images/Screenshot%202026-04-01%20010913.png" target="_blank"><img src='final_images/Screenshot%202026-04-01%20010913.png' title='PawPal App 8' width='900' alt='PawPal App 8' class='center-block' /></a>
